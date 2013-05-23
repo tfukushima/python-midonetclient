@@ -52,6 +52,10 @@ class MidonetApi(object):
         self._ensure_application()
         return self.app.get_bridges(query)
 
+    def get_vlan_bridges(self, query):
+        self._ensure_application()
+        return self.app.get_vlan_bridges(query)
+
     def delete_port_group(self, id_):
         self._ensure_application()
         return self.app.delete_port_group(id_)
@@ -112,6 +116,10 @@ class MidonetApi(object):
         self._ensure_application()
         return self.app.get_bridge(id_)
 
+    def get_vlan_bridge(self, id_):
+        self._ensure_application()
+        return self.app.get_vlan_bridge(id_)
+
     def get_port_group(self, id_):
         self._ensure_application()
         return self.app.get_port_group(id_)
@@ -151,6 +159,10 @@ class MidonetApi(object):
     def add_bridge(self):
         self._ensure_application()
         return self.app.add_bridge()
+
+    def add_vlan_bridge(self):
+        self._ensure_application()
+        return self.app.add_vlan_bridge()
 
     def add_port_group(self):
         self._ensure_application()

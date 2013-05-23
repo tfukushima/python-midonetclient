@@ -103,3 +103,6 @@ APPLICATION_HOST_INTERFACE_PORT_JSON = \
     "application/vnd.org.midonet.HostInterfacePort-v1+json"
 APPLICATION_HOST_INTERFACE_PORT_COLLECTION_JSON = \
     "application/vnd.org.midonet.collection.HostInterfacePort-v1+json"
+APPLICATION_VLAN_BRIDGE_JSON = "application/vnd.org.midonet.VlanBridge-v1+json";
+APPLICATION_VLAN_BRIDGE_COLLECTION_JSON = "application/vnd.org.midonet.collection.VlanBridge-v1+json";
+

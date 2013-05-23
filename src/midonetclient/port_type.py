@@ -22,3 +22,5 @@ EXTERIOR_BRIDGE = "ExteriorBridge"
 EXTERIOR_ROUTER = "ExteriorRouter"
 INTERIOR_BRIDGE = "InteriorBridge"
 INTERIOR_ROUTER = "InteriorRouter"
+TRUNK_VLAN_BRIDGE = "TrunkVlanBridge";      
+INTERIOR_VLAN_BRIDGE = "InteriorVlanBridge";

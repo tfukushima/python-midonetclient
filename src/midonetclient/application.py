@@ -33,6 +33,7 @@ from midonetclient.router import Router
 from midonetclient.router_port import RouterPort
 from midonetclient.rule import Rule
 from midonetclient.tunnel_zone import TunnelZone
+from midonetclient.vlan_bridge import VlanBridge
 
 
 class Application(ResourceBase):
@@ -51,6 +52,9 @@ class Application(ResourceBase):
 
     def get_bridge_template(self):
         return self.dto['bridgeTemplate']
+
+    def get_vlan_bridge_template(self):
+        return self.dto['vlanBridgeTemplate']
 
     def get_chain_template(self):
         return self.dto['chainTemplate']
@@ -85,6 +89,11 @@ class Application(ResourceBase):
         headers = {'Accept':
                    vendor_media_type.APPLICATION_BRIDGE_COLLECTION_JSON}
         return self.get_children(self.dto['bridges'], query, headers, Bridge)
+
+    def get_vlan_bridges(self, query):
+        headers = {'Accept':
+                   vendor_media_type.APPLICATION_VLAN_BRIDGE_COLLECTION_JSON}
+        return self.get_children(self.dto['vlanBridges'], query, headers, VlanBridge)
 
     def get_port_groups(self, query):
         headers = {'Accept':
@@ -132,6 +141,9 @@ class Application(ResourceBase):
     def get_bridge(self, id_):
         return self._get_resource_by_id(Bridge, self.dto['bridges'],
                                         self.get_bridge_template(), id_)
+    def get_vlan_bridge(self, id_):
+        return self._get_resource_by_id(VlanBridge, self.dto['vlanBridges'],
+                                        self.get_vlan_bridge_template(), id_)
 
     def delete_chain(self, id_):
         return self._delete_resource_by_id(self.get_chain_template(), id_)
@@ -184,6 +196,9 @@ class Application(ResourceBase):
 
     def add_bridge(self):
         return Bridge(self.dto['bridges'], {}, self.auth)
+
+    def add_vlan_bridge(self):
+        return VlanBridge(self.dto['vlanBridges'], {}, self.auth)
 
     def add_port_group(self):
         return PortGroup(self.dto['portGroups'], {}, self.auth)
