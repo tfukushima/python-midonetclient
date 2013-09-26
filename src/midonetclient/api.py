@@ -28,6 +28,7 @@ from midonetclient import exc
 
 LOG = logging.getLogger(__name__)
 
+
 def _net_addr(addr):
     """Get network address prefix and length from a given address."""
     nw_addr, nw_len = addr.split('/')
@@ -44,7 +45,7 @@ class MidonetApi(object):
         self.auth = auth_lib.Auth(self.base_uri + '/login', username, password,
                                   project_id)
 
-    def get_tenants(self, query = {}):
+    def get_tenants(self, query={}):
         self._ensure_application()
         return self.app.get_tenants(query)
 
@@ -68,9 +69,19 @@ class MidonetApi(object):
         self._ensure_application()
         return self.app.delete_port_group(id_)
 
+    def delete_ip_addr_group(self, id_):
+        self._ensure_application()
+        return self.app.delete_ip_addr_group(id_)
+
     def get_port_groups(self, query):
         self._ensure_application()
         return self.app.get_port_groups(query)
+
+    def get_ip_addr_groups(self, query=None):
+        if query is None:
+            query = {}
+        self._ensure_application()
+        return self.app.get_ip_addr_groups(query)
 
     def get_chains(self, query):
         self._ensure_application()
@@ -99,7 +110,7 @@ class MidonetApi(object):
             query = {}
         self._ensure_application()
         return self.app.get_hosts(query)
-    
+
     def add_host_interface_port(self, host, port_id, interface_name):
         return host.add_host_interface_port().port_id(port_id) \
             .interface_name(interface_name).create()
@@ -144,6 +155,10 @@ class MidonetApi(object):
         self._ensure_application()
         return self.app.get_port_group(id_)
 
+    def get_ip_addr_group(self, id_):
+        self._ensure_application()
+        return self.app.get_ip_addr_group(id_)
+
     def delete_port(self, id_):
         self._ensure_application()
         return self.app.delete_port(id_)
@@ -187,6 +202,10 @@ class MidonetApi(object):
     def add_port_group(self):
         self._ensure_application()
         return self.app.add_port_group()
+
+    def add_ip_addr_group(self):
+        self._ensure_application()
+        return self.app.add_ip_addr_group()
 
     def add_chain(self):
         self._ensure_application()
@@ -490,6 +509,50 @@ if __name__ == '__main__':
         print '\t', ar.get_prefix_length()
 
     print rp1.get_bgps()
+
+    # Remove all the existing IP addr groups and their addresses
+    ip_addr_groups = api.get_ip_addr_groups()
+    print "Removing %d IP addr groups" % len(ip_addr_groups)
+    for ip_addr_group in ip_addr_groups:
+        # Get all the addresses
+        addrs = ip_addr_group.get_addrs()
+        print "Removing %d IP addrs" % len(addrs)
+        for addr in addrs:
+            print "Removing %r" % addr
+            addr.delete()
+        print "Removing %r" % ip_addr_group
+        ip_addr_group.delete()
+
+    # IP Addr group
+    ip_addr_group = api.add_ip_addr_group().name("foo").create()
+
+    # Get itn
+    ip_addr_groups = api.get_ip_addr_groups()
+    print "Got %d IP addr groups" % len(ip_addr_groups)
+    assert 1 == len(ip_addr_groups)
+
+    # Add IPv4 address
+    ip_addr_group_addr = ip_addr_group.add_ipv4_addr().addr(
+        "10.0.10.1").create()
+
+    # Get the addresses
+    ip_addr_group_addrs = ip_addr_group.get_addrs()
+    assert 1 == len(ip_addr_group_addrs)
+
+    # Delete the address
+    ip_addr_group_addrs[0].delete()
+
+    # Make sure it's gone
+    ip_addr_group_addrs = ip_addr_group.get_addrs()
+    assert 0 == len(ip_addr_group_addrs)
+
+    # Delete it
+    ip_addr_group.delete()
+
+    # Get it again
+    ip_addr_groups = api.get_ip_addr_groups()
+    print "Got %d IP addr groups" % len(ip_addr_groups)
+    assert 0 == len(ip_addr_groups)
 
     # Bridges
     bridge1 = api.add_bridge().name('bridge-1').tenant_id(tenant_id).create()
